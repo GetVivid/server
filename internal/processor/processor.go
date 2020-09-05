@@ -7,6 +7,7 @@ import (
 	"image/color"
 	"image/draw"
 
+	"github.com/lucasb-eyer/go-colorful"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -74,7 +75,7 @@ func (s service) Exact(frame image.Image) []Light {
 		// .At() starts at 0, but the width and height start at 1
 		// to keep from going out of bounds we need to reduce it by one.
 		coords := l.pixel(width-1, height-1)
-		lc := frame.At(coords.X, coords.Y)
+		lc, _ := colorful.MakeColor(frame.At(coords.X, coords.Y))
 		r, g, b, _ := lc.RGBA()
 		log.WithFields(log.Fields{
 			"id":    l.ID,
@@ -122,7 +123,7 @@ func (s service) Area(frame image.Image, size int) []Light {
 		g /= d
 		b /= d
 
-		avgColor := color.NRGBA{uint8(r / 0x101), uint8(g / 0x101), uint8(b / 0x101), 255}
+		avgColor, _ := colorful.MakeColor(color.NRGBA{uint8(r / 0x101), uint8(g / 0x101), uint8(b / 0x101), 255})
 		lights = append(lights, Light{ID: l.ID, Coords: l.Coords, Color: avgColor})
 	}
 
